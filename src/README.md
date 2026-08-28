@@ -160,21 +160,8 @@ Results are saved to `results/benchmark_results.csv`.
   For p > 10, subset sampling is recommended — contact the author for
   the scalable variant described in the dissertation.
 
----
 
-## Citation
 
-```bibtex
-@phdthesis{villarreal2025iis,
-  author = {Villarreal, Gregory},
-  title  = {Scalable Information-Theoretic Modeling of Multimodal Brain Data
-            for Disease Stratification and Prediction},
-  school = {Meharry Medical College},
-  year   = {2025}
-}
-```
-
----
 
 ## License
 

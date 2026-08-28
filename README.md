@@ -1,11 +1,4 @@
 
-# AI ASSISTANCE DISCLOSURE
-# Portions of this file were developed with the assistance of Claude
-# (Anthropic, claude.ai). The author reviewed, validated, and approved
-# all code. Scientific methodology, mathematical formulations, and
-# research decisions are solely the work of the author.
-
-
 # Information Interaction Structure (IIS) Pipeline
 
 [![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org/)
@@ -155,7 +148,15 @@ Results are saved to `results/benchmark_results.csv`.
 
 ---
 
+## Acknowledgements
 
+### AI assistance disclosure
+Portions of this codebase were developed with the assistance of Claude
+(Anthropic), an AI language model. Claude assisted with code structure,
+documentation, and refactoring. All scientific methodology, mathematical
+formulations, theoretical framework, and research decisions were conceived
+and validated by the author. All code was reviewed, tested, and approved
+by the author prior to inclusion in this repository.
 
 ## License
 

@@ -11,13 +11,6 @@
 [![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-Code accompanying:
-
-> **Villarreal G.** (2025). *Scalable Information-Theoretic Modeling of Multimodal
-> Brain Data for Disease Stratification and Prediction.*
-> PhD Dissertation, Meharry Medical College.
-
----
 
 ## Overview
 

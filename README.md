@@ -1,10 +1,10 @@
-# ─────────────────────────────────────────────────────────────────
+
 # AI ASSISTANCE DISCLOSURE
 # Portions of this file were developed with the assistance of Claude
 # (Anthropic, claude.ai). The author reviewed, validated, and approved
 # all code. Scientific methodology, mathematical formulations, and
 # research decisions are solely the work of the author.
-# ─────────────────────────────────────────────────────────────────
+
 
 # Information Interaction Structure (IIS) Pipeline
 

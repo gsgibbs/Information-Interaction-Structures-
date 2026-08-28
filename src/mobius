@@ -1,0 +1,134 @@
+"""
+src/mobius.py
+=============
+Möbius inversion on the Boolean subset lattice and architecture mass
+aggregation.
+
+These functions are the mathematical core of the IIS pipeline.  They
+are deliberately isolated from the entropy estimators (src/estimators.py)
+so that a researcher who wants to apply Möbius decomposition to a
+different information measure can do so by supplying a different
+entropy_table without modifying this file.
+
+Background
+----------
+Given a set of variables {X₁, …, Xₖ}, the entropy function H(S)
+defined over all subsets S ⊆ {1,…,k} forms a function on the Boolean
+lattice 2^[k].  The Möbius inversion of H on this lattice produces
+interaction coefficients M(S) that isolate the *unique* contribution
+of each subset — the dependence that cannot be explained by any
+proper sub-interaction.
+
+Architecture mass A_m = Σ_{|S|=m} |M(S)| aggregates these coefficients
+by interaction order m, giving a fingerprint of where dependence "lives"
+in the variable system.
+
+References
+----------
+Baudot, P., Tapia, M., Bennequin, D., & Goaillard, J. M. (2019).
+Topological information data analysis. Entropy, 21(9), 869.
+
+Rosas, F. E., Mediano, P. A., Gastpar, M., & Jensen, H. J. (2019).
+Quantifying high-order interdependencies via multivariate extensions
+of the mutual information. Physical Review E, 100(3), 032305.
+"""
+
+from itertools import combinations
+
+
+# ─────────────────────────────────────────────────────────────────
+# Lattice utilities
+# ─────────────────────────────────────────────────────────────────
+
+def powerset(subset):
+    """
+    Return all non-empty subsets of *subset* as a list of tuples.
+
+    Parameters
+    ----------
+    subset : sequence
+        Elements to form subsets from.
+
+    Returns
+    -------
+    list of tuple
+        All 2^|subset| − 1 non-empty subsets.
+    """
+    s = list(subset)
+    out = []
+    for r in range(1, len(s) + 1):
+        out.extend(combinations(s, r))
+    return out
+
+
+# ─────────────────────────────────────────────────────────────────
+# Möbius inversion
+# ─────────────────────────────────────────────────────────────────
+
+def mobius_inversion(entropy_table):
+    """
+    Möbius inversion of an entropy function on the Boolean subset lattice.
+
+    For each subset S, computes the interaction coefficient:
+
+        M(S) = Σ_{T ⊆ S} (−1)^{|S|−|T|} · H(T)
+
+    This is the inclusion–exclusion decomposition that isolates the
+    unique |S|-way interaction irreducible to lower-order terms.
+
+    Parameters
+    ----------
+    entropy_table : dict
+        Maps tuple-of-variable-names → entropy value (float, bits).
+        Must contain entries for all non-empty subsets up to the
+        desired maximum order.
+
+    Returns
+    -------
+    dict
+        Maps tuple-of-variable-names → Möbius coefficient M(S) (float).
+        Positive values indicate net redundancy at that order;
+        negative values indicate net synergy.
+    """
+    mobius = {}
+    for S in entropy_table:
+        mu = 0.0
+        for T in powerset(S):
+            mu += (-1) ** (len(S) - len(T)) * entropy_table[T]
+        mobius[S] = mu
+    return mobius
+
+
+# ─────────────────────────────────────────────────────────────────
+# Architecture mass
+# ─────────────────────────────────────────────────────────────────
+
+def architecture_mass(mobius, orders=(2, 3, 4, 5)):
+    """
+    Aggregate absolute Möbius coefficients by interaction order.
+
+    A_m = Σ_{S : |S|=m} |M(S)|
+
+    Taking absolute values collapses the redundancy/synergy sign so
+    that A_m measures the *total* interaction mass at order m,
+    regardless of its direction.
+
+    Parameters
+    ----------
+    mobius : dict
+        Output of ``mobius_inversion``.
+    orders : tuple of int, optional
+        Interaction orders to aggregate (default: 2, 3, 4, 5).
+        Order 1 is excluded because singleton subsets carry no
+        interaction information by definition.
+
+    Returns
+    -------
+    dict
+        Maps 'A2', 'A3', … → float (architecture mass per order).
+    """
+    Am = {o: 0.0 for o in orders}
+    for subset, value in mobius.items():
+        if len(subset) in Am:
+            Am[len(subset)] += abs(value)
+    return {f"A{o}": Am[o] for o in orders}
